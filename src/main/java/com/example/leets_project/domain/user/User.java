@@ -2,17 +2,13 @@ package com.example.leets_project.domain.user;
 
 import com.example.leets_project.common.entity.BaseEntity;
 import com.example.leets_project.domain.comment.Comment;
-import com.example.leets_project.domain.post.Post;
+import com.example.leets_project.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.domain.Auditable;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

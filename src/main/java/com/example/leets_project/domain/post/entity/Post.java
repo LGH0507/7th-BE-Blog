@@ -1,6 +1,8 @@
-package com.example.leets_project.domain.post;
+package com.example.leets_project.domain.post.entity;
 
 import com.example.leets_project.common.entity.BaseEntity;
+import com.example.leets_project.common.exception.GeneralException;
+import com.example.leets_project.common.response.ErrorCode;
 import com.example.leets_project.domain.comment.Comment;
 import com.example.leets_project.domain.user.User;
 import jakarta.persistence.*;
@@ -8,10 +10,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,5 +47,17 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
         this.description = description;
+    }
+    public void updatePost(String title, String content, String description, Long requesterId) {
+        validateOwner(requesterId);
+        this.title = title;
+        this.content = content;
+        this.description = description;
+    }
+
+    public void validateOwner(Long userId) {
+        if (!this.user.getId().equals(userId)) {
+            throw new GeneralException(ErrorCode.POST_FORBIDDEN);
+        }
     }
 }

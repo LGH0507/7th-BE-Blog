@@ -16,55 +16,47 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    // 커스텀 예외
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<GlobalResponse> handleGeneralException(GeneralException e) {
-        ErrorCode errorCode = e.getErrorCode();
-
-        return GlobalResponse.onFailure(errorCode);
+        log.warn("GeneralException: [{}] {}", e.getErrorCode().getCode(), e.getErrorCode().getMessage());
+        return GlobalResponse.onFailure(e.getErrorCode());
     }
-
+    // Validation 에러
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<GlobalResponse> handleValidationExceptions(MethodArgumentNotValidException e) {
-        ErrorCode errorCode = ErrorCode.VALIDATION_FAILED;
-
-        String errorMessage = e.getBindingResult()
-                .getAllErrors()
+        String errorDetail = e.getBindingResult()
+                .getFieldErrors()
                 .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.joining(","));
+                .map(error -> "[" + error.getField() + "]: " + error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
 
-        return GlobalResponse.onFailure(errorCode, errorMessage);
+        log.warn("Validation Failed: {}", errorDetail);
+        return GlobalResponse.onFailure(ErrorCode.VALIDATION_FAILED, errorDetail);
     }
 
-    @ExceptionHandler(com.fasterxml.jackson.core.JsonParseException.class) // JSON 파싱 오류 처리
-    public ResponseEntity<GlobalResponse> handleJsonParseException(
-            com.fasterxml.jackson.core.JsonParseException e) {
-        log.error("JSON 파싱 오류: {}", e.getMessage());
-        return GlobalResponse.onFailure(ErrorCode.VALIDATION_FAILED);
-    }
+    // JSON 처리 에러
+    @ExceptionHandler({com.fasterxml.jackson.core.JsonParseException.class,
+            com.fasterxml.jackson.databind.JsonMappingException.class})
+    public ResponseEntity<GlobalResponse> handleJsonException(Exception e) {
+        log.error("JSON 처리 오류: {}", e.getMessage());
 
-    @ExceptionHandler(com.fasterxml.jackson.databind.JsonMappingException.class) // JSON 매핑 오류 처리
-    public ResponseEntity<GlobalResponse> handleJsonMappingException(
-            com.fasterxml.jackson.databind.JsonMappingException e) {
-        log.error("JSON 매핑 오류: {}", e.getMessage());
-        return GlobalResponse.onFailure(ErrorCode.VALIDATION_FAILED);
+        return GlobalResponse.onFailure(ErrorCode.VALIDATION_FAILED, "잘못된 JSON 형식입니다.");
     }
 
     // X-USER-ID 헤더 누락
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<GlobalResponse> handleMissingHeader(MissingRequestHeaderException e) {
         log.warn("필수 헤더 누락 - {}", e.getHeaderName());
-        return GlobalResponse.onFailure(ErrorCode.UNAUTHORIZED);
+
+        return GlobalResponse.onFailure(ErrorCode.UNAUTHORIZED, "필수 헤더가 누락되었습니다.");
     }
 
+    // 모든 예외
     @ExceptionHandler(Exception.class)
     public ResponseEntity<GlobalResponse> handleGenericException(Exception e) {
-        ErrorCode errorCode =
-                ErrorCode.INTERNAL_ERROR;
-        log.error("Unexpected Error Occured");
-        log.error(e.getMessage(), e);
-        log.error(e.getClass().getSimpleName());
+        log.error("Unexpected Error", e);
 
-        return GlobalResponse.onFailure(errorCode);
+        return GlobalResponse.onFailure(ErrorCode.INTERNAL_ERROR);
     }
 }

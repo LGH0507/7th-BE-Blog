@@ -20,7 +20,8 @@ public enum ErrorCode {
 
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_4040", "사용자를 찾을 수 없습니다."),
-
+    USER_EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_4001", "이미 사용 중인 이메일입니다."),
+    USER_NICKNAME_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_4002", "이미 사용 중인 닉네임입니다."),
     // POST
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST_4040", "게시글을 찾을 수 없습니다."),
     POST_INVALID(HttpStatus.BAD_REQUEST, "POST_4001", "게시글 입력값이 올바르지 않습니다."),
