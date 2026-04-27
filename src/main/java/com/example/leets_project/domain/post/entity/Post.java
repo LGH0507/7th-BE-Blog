@@ -3,7 +3,7 @@ package com.example.leets_project.domain.post.entity;
 import com.example.leets_project.common.entity.BaseEntity;
 import com.example.leets_project.common.exception.GeneralException;
 import com.example.leets_project.common.response.ErrorCode;
-import com.example.leets_project.domain.comment.Comment;
+import com.example.leets_project.domain.comment.entity.Comment;
 import com.example.leets_project.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
