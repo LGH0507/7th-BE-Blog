@@ -1,6 +1,6 @@
 package com.example.leets_project.domain.user.web.dto;
 
-import com.example.leets_project.domain.user.User;
+import com.example.leets_project.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 

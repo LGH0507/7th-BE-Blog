@@ -45,7 +45,7 @@ public class CommentController {
     }
     // 댓글 삭제
     @Operation(summary = "댓글 삭제", description = "특정 댓글을 삭제합니다.")
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/{commentId}/delete")
     public ResponseEntity<GlobalResponse> deleteComment(@PathVariable Long postId,
                                                         @PathVariable Long commentId,
                                                         @RequestHeader("X-USER-ID") Long currentUserId){
@@ -53,6 +53,17 @@ public class CommentController {
         CommentDeleteResponse response = commentService.deleteComment(postId, commentId, currentUserId);
 
         return GlobalResponse.onSuccess(SuccessCode.COMMENT_DELETE, response);
+    }
+    // 댓글 숨김
+    @Operation(summary = "댓글 숨김", description = "특정 댓글을 숨김 처리합니다.")
+    @PatchMapping("/{commentId}/hide")
+    public ResponseEntity<GlobalResponse> hideComment(@PathVariable Long postId,
+                                                      @PathVariable Long commentId,
+                                                      @RequestHeader("X-USER-ID") Long currentUserId) {
+
+        CommentHideResponse response = commentService.hideComment(postId, commentId, currentUserId);
+
+        return GlobalResponse.onSuccess(SuccessCode.COMMENT_HIDE, response);
     }
     // 댓글 목록 조회(특정 게시물)
     @Operation(summary = "댓글 목록 조회", description = "특정 게시물의 댓글 목록을 조회합니다.")

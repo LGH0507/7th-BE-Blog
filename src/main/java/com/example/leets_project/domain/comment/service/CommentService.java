@@ -8,7 +8,7 @@ import com.example.leets_project.domain.comment.repository.CommentRepository;
 import com.example.leets_project.domain.comment.web.dto.*;
 import com.example.leets_project.domain.post.entity.Post;
 import com.example.leets_project.domain.post.repository.PostRepository;
-import com.example.leets_project.domain.user.User;
+import com.example.leets_project.domain.user.entity.User;
 import com.example.leets_project.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,6 +32,8 @@ public class CommentService {
 
         User user = findUserOrThrow(currentUserId);
         Post post = findPostOrThrow(postId);
+        // HIDDEN/DELETED 게시글 댓글 생성 방지
+        post.validateVisible();
 
         Comment comment = Comment.builder()
                 .user(user)
@@ -46,33 +48,41 @@ public class CommentService {
     @Transactional
     public CommentUpdateResponse updateComment(Long postId,Long commentId, Long currentUserId, CommentUpdateRequest request){
 
-        findUserOrThrow(currentUserId);
-        findPostOrThrow(postId);
         Comment comment = findCommentOrThrow(commentId);
         validateCommentBelongsToPost(comment, postId);
 
         comment.updateContent(request.getContent(), currentUserId);
 
-        return CommentUpdateResponse.from(commentRepository.save(comment));
+        return CommentUpdateResponse.from(comment);
     }
     // 댓글 삭제
     @Transactional
     public CommentDeleteResponse deleteComment(Long postId, Long commentId, Long currentUserId){
 
-        findUserOrThrow(currentUserId);
-        findPostOrThrow(postId);
         Comment comment = findCommentOrThrow(commentId);
         validateCommentBelongsToPost(comment, postId);
-
-        // 상태 변경(ACTIVE -> DELETED)
-        comment.changeStatusToDeleted();
+        // 권한 검증 + 상태 전이(ACTIVE -> DELETED)
+        comment.delete(currentUserId);
 
         return CommentDeleteResponse.of(commentId);
+    }
+    // 댓글 숨김
+    @Transactional
+    public CommentHideResponse hideComment(Long postId, Long commentId, Long currentUserId) {
+
+        Comment comment = findCommentOrThrow(commentId);
+        validateCommentBelongsToPost(comment, postId);
+        // 권한 검증 + 상태 전이(ACTIVE -> HIDDEN)
+        comment.hide(currentUserId);
+
+        return CommentHideResponse.from(comment);
     }
     // 댓글 목록 조회(특정 게시글)
     public Page<CommentListResponse> getComments(Long postId, int page, int size) {
 
-        findPostOrThrow(postId);
+        Post post = findPostOrThrow(postId);
+        // HIDDEN/DELETED 게시글 댓글 조회 방지
+        post.validateVisible();
 
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdAt"));
 
@@ -91,18 +101,10 @@ public class CommentService {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new GeneralException(ErrorCode.POST_NOT_FOUND));
     }
-    // 댓글 검증(존재/DELETED/HIDDEN)
+    // 댓글 검증(존재 여부만 확인)
     private Comment findCommentOrThrow(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
+        return commentRepository.findById(commentId)
                 .orElseThrow(() -> new GeneralException(ErrorCode.COMMENT_NOT_FOUND));
-
-        if (comment.getStatus() == CommentStatus.DELETED) {
-            throw new GeneralException(ErrorCode.COMMENT_ALREADY_DELETED);
-        }
-        if (comment.getStatus() == CommentStatus.HIDDEN) {
-            throw new GeneralException(ErrorCode.COMMENT_ALREADY_HIDDEN);
-        }
-        return comment;
     }
     // 댓글이 해당 게시글 소속인지 검증
     private void validateCommentBelongsToPost(Comment comment, Long postId) {
