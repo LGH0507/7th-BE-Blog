@@ -25,7 +25,19 @@ public enum ErrorCode {
     // POST
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST_4040", "게시글을 찾을 수 없습니다."),
     POST_INVALID(HttpStatus.BAD_REQUEST, "POST_4001", "게시글 입력값이 올바르지 않습니다."),
-    POST_FORBIDDEN(HttpStatus.FORBIDDEN, "POST_4003", "작성자만 수정/삭제할 수 있습니다.");
+    POST_FORBIDDEN(HttpStatus.FORBIDDEN, "POST_4003", "작성자만 수정/삭제할 수 있습니다."),
+    POST_ALREADY_HIDDEN(HttpStatus.BAD_REQUEST, "POST_4004", "이미 숨김 처리된 게시글입니다."),
+    POST_ALREADY_DELETED(HttpStatus.CONFLICT, "POST_4005", "이미 삭제 처리된 게시글입니다."),
+    // COMMENT
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_4040", "댓글을 찾을 수 없습니다."),
+    COMMENT_FORBIDDEN(HttpStatus.FORBIDDEN, "COMMENT_4003", "작성자만 수정/삭제할 수 있습니다."),
+    COMMENT_ALREADY_HIDDEN(HttpStatus.BAD_REQUEST, "COMMENT_4004", "이미 숨김 처리된 댓글입니다."),
+    COMMENT_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "COMMENT_4005", "이미 삭제 처리된 댓글입니다."),
+    // REPORT
+    REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "REPORT_4040", "신고를 찾을 수 없습니다."),
+    REPORT_ALREADY_EXISTS(HttpStatus.CONFLICT, "REPORT_4090", "이미 신고한 대상입니다."),
+    REPORT_ALREADY_RESOLVED(HttpStatus.CONFLICT, "REPORT_4091", "이미 처리된 신고입니다."),
+    REPORT_CANNOT_SELF(HttpStatus.BAD_REQUEST, "REPORT_4001", "자신의 게시물/댓글은 신고할 수 없습니다.");
 
     private final HttpStatus status;
     private final String code;
