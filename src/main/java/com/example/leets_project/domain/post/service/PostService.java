@@ -2,10 +2,11 @@ package com.example.leets_project.domain.post.service;
 
 import com.example.leets_project.common.exception.GeneralException;
 import com.example.leets_project.common.response.ErrorCode;
+import com.example.leets_project.domain.post.PostStatus;
 import com.example.leets_project.domain.post.entity.Post;
 import com.example.leets_project.domain.post.repository.PostRepository;
 import com.example.leets_project.domain.post.web.dto.*;
-import com.example.leets_project.domain.user.User;
+import com.example.leets_project.domain.user.entity.User;
 import com.example.leets_project.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -43,17 +44,18 @@ public class PostService {
         return PostCreateResponse.from(savedPost);
     }
 
-    // 2. 게시글 목록 조회 (페이징)
-    public Page<PostListResponse> getPosts(int page, int size) {
+    // 2. 게시글 목록 조회 - 상태별 필터링, 기본값 ACTIVE
+    // GET /api/posts?status=ACTIVE   → ACTIVE 게시글만
+    public Page<PostListResponse> getPosts(PostStatus status, int page, int size) {
 
-        validatePageRange(page);
+        validatePageRange(size);
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        return postRepository.findAll(pageable)
+        return postRepository.findAllByStatus(status, pageable)
                 .map(PostListResponse::from);
     }
 
-    // 3. 게시글 상세 조회
+    // 3. 게시글 상세 조회 - 상태 무관하게 조회 가능
     public PostDetailResponse getPostDetail(Long postId) {
 
         Post post = findPostOrThrow(postId);
@@ -76,17 +78,18 @@ public class PostService {
 
         return PostUpdateResponse.from(post);
     }
-
-    // 5. 게시글 삭제
+    // 5. 게시글 숨김(ACTIVE → HIDDEN)
+    @Transactional
+    public PostHideResponse hidePost(Long postId, Long currentUserId) {
+        Post post = findPostOrThrow(postId);
+        post.hide(currentUserId);
+        return PostHideResponse.from(post);
+    }
+    // 6. 게시글 삭제(soft delete)
     @Transactional
     public PostDeleteResponse deletePost(Long postId, Long currentUserId) {
-
         Post post = findPostOrThrow(postId);
-
-        post.validateOwner(currentUserId);
-
-        postRepository.delete(post);
-
+        post.delete(currentUserId);
         return PostDeleteResponse.of(postId);
     }
 

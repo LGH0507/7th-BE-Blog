@@ -1,4 +1,4 @@
-package com.example.leets_project.domain.user;
+package com.example.leets_project.domain.user.entity;
 
 import com.example.leets_project.common.entity.BaseEntity;
 import com.example.leets_project.domain.comment.entity.Comment;

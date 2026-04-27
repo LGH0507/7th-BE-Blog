@@ -22,6 +22,7 @@ public enum SuccessCode {
     COMMENT_LIST(HttpStatus.OK, "COMMENT_2000", "댓글 목록 조회 성공"),
     COMMENT_UPDATE(HttpStatus.OK, "COMMENT_2001", "댓글 수정 성공"),
     COMMENT_DELETE(HttpStatus.OK, "COMMENT_2002", "댓글 삭제 성공"),
+    COMMENT_HIDE(HttpStatus.OK, "COMMENT_2004", "댓글 숨김 성공"),
     // REPORT
     REPORT_POST(HttpStatus.CREATED, "REPORT_2010", "게시글 신고 성공"),
     REPORT_COMMENT(HttpStatus.CREATED, "REPORT_2011", "댓글 신고 성공"),
