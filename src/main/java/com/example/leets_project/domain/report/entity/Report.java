@@ -31,7 +31,7 @@ public class Report extends BaseEntity {
 
     private Long targetId; // postId or commentId
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String reason;
 
     @Enumerated(EnumType.STRING)

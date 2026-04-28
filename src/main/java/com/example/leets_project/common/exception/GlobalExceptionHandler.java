@@ -4,6 +4,7 @@ import com.example.leets_project.common.response.ErrorCode;
 import com.example.leets_project.common.response.GlobalResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -58,5 +59,12 @@ public class GlobalExceptionHandler {
         log.error("Unexpected Error", e);
 
         return GlobalResponse.onFailure(ErrorCode.INTERNAL_ERROR);
+    }
+
+    // DataIntegrityViolationException - DB 제약조건 위반 (동시 요청 등)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<GlobalResponse> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        log.warn("DataIntegrityViolationException: {}", e.getMessage());
+        return GlobalResponse.onFailure(ErrorCode.REPORT_ALREADY_EXISTS);
     }
 }
