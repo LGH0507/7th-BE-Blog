@@ -30,6 +30,7 @@ public enum ErrorCode {
     POST_DELETED(HttpStatus.NOT_FOUND, "POST_4031", "삭제된 게시글입니다."),
     POST_ALREADY_HIDDEN(HttpStatus.BAD_REQUEST, "POST_4090", "이미 숨김 처리된 게시글입니다."),
     POST_ALREADY_DELETED(HttpStatus.CONFLICT, "POST_4091", "이미 삭제 처리된 게시글입니다."),
+    POST_ALREADY_ACTIVE(HttpStatus.CONFLICT, "POST_4092", "이미 활성화된 게시글입니다."),
     // COMMENT
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_4040", "댓글을 찾을 수 없습니다."),
     COMMENT_FORBIDDEN(HttpStatus.FORBIDDEN, "COMMENT_4003", "작성자만 수정/삭제할 수 있습니다."),
@@ -37,6 +38,7 @@ public enum ErrorCode {
     COMMENT_DELETED(HttpStatus.NOT_FOUND, "COMMENT_4031", "삭제된 댓글입니다."),
     COMMENT_ALREADY_HIDDEN(HttpStatus.BAD_REQUEST, "COMMENT_4090", "이미 숨김 처리된 댓글입니다."),
     COMMENT_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "COMMENT_4091", "이미 삭제 처리된 댓글입니다."),
+    COMMENT_ALREADY_ACTIVE(HttpStatus.CONFLICT, "COMMENT_4007", "이미 활성화된 댓글입니다."),
     // REPORT
     REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "REPORT_4040", "신고를 찾을 수 없습니다."),
     REPORT_ALREADY_EXISTS(HttpStatus.CONFLICT, "REPORT_4090", "이미 신고한 대상입니다."),

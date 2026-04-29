@@ -91,6 +91,17 @@ public class Post extends BaseEntity {
         this.status = PostStatus.DELETED;
         super.delete(); // BaseEntity deletedAt 기록
     }
+    // 게시글 복구(Hidden -> ACTIVE)
+    public void restore(Long requesterId) {
+        validateOwner(requesterId);
+        if (this.status == PostStatus.ACTIVE) {
+            throw new GeneralException(ErrorCode.POST_ALREADY_ACTIVE);
+        }
+        if (this.status == PostStatus.DELETED) {
+            throw new GeneralException(ErrorCode.POST_ALREADY_DELETED);
+        }
+        this.status = PostStatus.ACTIVE;
+    }
 
     public void validateOwner(Long userId) {
         if (!this.user.getId().equals(userId)) {
