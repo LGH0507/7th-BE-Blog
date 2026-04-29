@@ -81,18 +81,30 @@ public class PostService {
     // 5. 게시글 숨김(ACTIVE → HIDDEN)
     @Transactional
     public PostHideResponse hidePost(Long postId, Long currentUserId) {
+
         Post post = findPostOrThrow(postId);
         post.hide(currentUserId);
+
         return PostHideResponse.from(post);
     }
     // 6. 게시글 삭제(soft delete)
     @Transactional
     public PostDeleteResponse deletePost(Long postId, Long currentUserId) {
+
         Post post = findPostOrThrow(postId);
         post.delete(currentUserId);
+
         return PostDeleteResponse.of(postId);
     }
+    // 7. 게시글 복구(HIDDEN → ACTIVE)
+    @Transactional
+    public PostRestoreResponse restorePost(Long postId, Long currentUserId) {
 
+        Post post = findPostOrThrow(postId);
+        post.restore(currentUserId);
+
+        return PostRestoreResponse.from(post);
+    }
     // 공통 검증 로직
     // 게시글 조회
     private Post findPostOrThrow(Long postId) {

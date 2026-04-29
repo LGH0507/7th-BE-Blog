@@ -83,6 +83,20 @@ public class Comment extends BaseEntity {
         }
         this.status = CommentStatus.HIDDEN;
     }
+    // 댓글 복구(HIDDEN → ACTIVE)
+    public void restore(Long requesterId) {
+        // 복구 권한은 게시글 작성자 (hide와 동일)
+        if (!this.post.getUser().getId().equals(requesterId)) {
+            throw new GeneralException(ErrorCode.COMMENT_FORBIDDEN);
+        }
+        if (this.status == CommentStatus.ACTIVE) {
+            throw new GeneralException(ErrorCode.COMMENT_ALREADY_ACTIVE);
+        }
+        if (this.status == CommentStatus.DELETED) {
+            throw new GeneralException(ErrorCode.COMMENT_ALREADY_DELETED);
+        }
+        this.status = CommentStatus.ACTIVE;
+    }
     // 작성자 검증
     public void validateOwner(Long userId){
         if(!this.user.getId().equals(userId)){

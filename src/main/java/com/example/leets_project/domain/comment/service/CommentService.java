@@ -77,6 +77,16 @@ public class CommentService {
 
         return CommentHideResponse.from(comment);
     }
+    // 댓글 복구(HIDDEN → ACTIVE)
+    @Transactional
+    public CommentRestoreResponse restoreComment(Long postId, Long commentId, Long currentUserId) {
+
+        Comment comment = findCommentOrThrow(commentId);
+        validateCommentBelongsToPost(comment, postId);
+        comment.restore(currentUserId);
+
+        return CommentRestoreResponse.from(comment);
+    }
     // 댓글 목록 조회(특정 게시글)
     public Page<CommentListResponse> getComments(Long postId, int page, int size) {
 

@@ -65,6 +65,17 @@ public class CommentController {
 
         return GlobalResponse.onSuccess(SuccessCode.COMMENT_HIDE, response);
     }
+    // 댓글 복구
+    @Operation(summary = "댓글 복구", description = "HIDDEN 상태의 댓글을 ACTIVE로 복구합니다.")
+    @PatchMapping("/{commentId}/restore")
+    public ResponseEntity<GlobalResponse> restoreComment(@PathVariable Long postId,
+                                                         @PathVariable Long commentId,
+                                                         @RequestHeader("X-USER-ID") Long currentUserId) {
+
+        CommentRestoreResponse response = commentService.restoreComment(postId, commentId, currentUserId);
+
+        return GlobalResponse.onSuccess(SuccessCode.COMMENT_RESTORE, response);
+    }
     // 댓글 목록 조회(특정 게시물)
     @Operation(summary = "댓글 목록 조회", description = "특정 게시물의 댓글 목록을 조회합니다.")
     @GetMapping

@@ -87,4 +87,14 @@ public class PostController {
 
         return GlobalResponse.onSuccess(SuccessCode.POST_DELETE, response);
     }
+    // 7. 게시글 복구
+    @Operation(summary = "게시글 복구", description = "HIDDEN 상태의 게시글을 ACTIVE로 복구합니다.")
+    @PatchMapping("/{postId}/restore")
+    public ResponseEntity<GlobalResponse> restorePost(@PathVariable Long postId,
+                                                      @RequestHeader("X-USER-ID") Long currentUserId) {
+
+        PostRestoreResponse response = postService.restorePost(postId, currentUserId);
+
+        return GlobalResponse.onSuccess(SuccessCode.POST_RESTORE, response);
+    }
 }
