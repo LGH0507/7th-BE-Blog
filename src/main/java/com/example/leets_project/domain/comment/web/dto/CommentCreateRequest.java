@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "댓글 생성 요청")
 public class CommentCreateRequest {
 
     @NotBlank(message = "댓글 내용은 필수입니다.")
