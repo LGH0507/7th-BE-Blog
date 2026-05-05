@@ -2,7 +2,7 @@ package com.example.leets_project.domain.user.service;
 
 import com.example.leets_project.common.exception.GeneralException;
 import com.example.leets_project.common.response.ErrorCode;
-import com.example.leets_project.domain.user.User;
+import com.example.leets_project.domain.user.entity.User;
 import com.example.leets_project.domain.user.repository.UserRepository;
 import com.example.leets_project.domain.user.web.dto.UserCreateRequest;
 import com.example.leets_project.domain.user.web.dto.UserCreateResponse;

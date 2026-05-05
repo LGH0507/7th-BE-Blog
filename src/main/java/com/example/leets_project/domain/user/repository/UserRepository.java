@@ -1,6 +1,6 @@
 package com.example.leets_project.domain.user.repository;
 
-import com.example.leets_project.domain.user.User;
+import com.example.leets_project.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User,Long> {
