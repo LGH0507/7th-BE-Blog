@@ -107,8 +107,8 @@ public class JwtTokenProvider {
     }
 
     // Token Type 일치 검증
-    public void validateTokenType(String token, TokenType expectedType) {
-        String tokenType = parseClaims(token).get(TOKEN_TYPE_KEY, String.class);
+    public void validateTokenType(Claims claims, TokenType expectedType) {
+        String tokenType = claims.get(TOKEN_TYPE_KEY, String.class);
         if (tokenType == null || !tokenType.equals(expectedType.name())) {
             throw new GeneralException(ErrorCode.INVALID_TOKEN);
         }

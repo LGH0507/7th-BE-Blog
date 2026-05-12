@@ -1,6 +1,7 @@
 package com.example.leets_project.common.security.jwt;
 
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,8 +38,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 토큰 존재, 유효한 경우 인증 정보 설정
             if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
 
+                Claims claims = jwtTokenProvider.parseClaims(token);
                 // Token Type 검증
-                jwtTokenProvider.validateTokenType(token, TokenType.ACCESS);
+                jwtTokenProvider.validateTokenType(claims, TokenType.ACCESS);
 
                 // Authentication 객체 생성 및 SecurityContext 저장
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
