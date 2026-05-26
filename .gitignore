@@ -53,5 +53,5 @@ out/
 Thumbs.db
 
 # yaml
-*.yml
-*.yaml
+application.yaml
+application.yml
