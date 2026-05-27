@@ -55,3 +55,4 @@ Thumbs.db
 # yaml
 application.yaml
 application.yml
+docker-compose.yml
